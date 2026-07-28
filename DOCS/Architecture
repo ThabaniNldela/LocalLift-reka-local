@@ -1,0 +1,12 @@
+Customer
+      │
+      ▼
+ React Application
+      │
+ REST API
+      │
+ Node.js Server
+      │
+ Firebase
+      │
+Vendor Dashboard
