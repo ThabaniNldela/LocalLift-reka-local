@@ -1,0 +1,89 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,300;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import 'tailwindcss';
+
+@theme inline {
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: #faf7f2;
+  color: #1a1612;
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-display { font-family: 'Fraunces', Georgia, serif; }
+.font-mono-label { font-family: 'JetBrains Mono', monospace; }
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #d4c9bc; border-radius: 3px; }
+
+/* ── Responsive layout helpers ── */
+
+.nav-links { display: flex; }
+.hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; min-height: 580px; }
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); }
+.problem-grid { display: grid; grid-template-columns: 360px 1fr; gap: 80px; align-items: start; }
+.problem-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.solution-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+.solution-features { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.hiw-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+.features-grid { display: grid; grid-template-columns: 320px 1fr; gap: 80px; }
+.features-cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.inclusive-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+.diff-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.revenue-grid { display: flex; justify-content: center; gap: 48px; flex-wrap: wrap; margin-top: 16px; }
+.testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+.footer-bottom { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+.cta-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.hero-mockup-wrap { position: relative; display: flex; justify-content: flex-end; padding-bottom: 0; }
+.hero-trust-pills { display: flex; gap: 20px; margin-top: 40px; flex-wrap: wrap; }
+.hero-cta-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+
+@media (max-width: 1024px) {
+  .features-grid { grid-template-columns: 1fr; }
+  .features-cards { grid-template-columns: 1fr 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+}
+
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .hero-grid { grid-template-columns: 1fr; gap: 40px; min-height: unset; }
+  .hero-mockup-wrap { justify-content: center; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .problem-grid { grid-template-columns: 1fr; gap: 40px; }
+  .problem-cards { grid-template-columns: 1fr; }
+  .solution-grid { grid-template-columns: 1fr; gap: 40px; }
+  .solution-features { grid-template-columns: 1fr; }
+  .hiw-grid { grid-template-columns: 1fr 1fr; gap: 20px; }
+  .features-grid { grid-template-columns: 1fr; gap: 40px; }
+  .features-cards { grid-template-columns: 1fr; }
+  .inclusive-grid { grid-template-columns: 1fr; gap: 40px; }
+  .diff-grid { grid-template-columns: 1fr; }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .testimonials-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+  .footer-bottom { flex-direction: column; align-items: flex-start; }
+}
+
+@media (max-width: 480px) {
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .hiw-grid { grid-template-columns: 1fr; }
+  .hero-trust-pills { gap: 16px; }
+  .hero-cta-btns { flex-direction: column; }
+  .cta-buttons { flex-direction: column; align-items: center; }
+  .section-pad { padding-top: 64px !important; padding-bottom: 64px !important; }
+}
+
+@media (max-width: 768px) {
+  .section-pad { padding-top: 72px !important; padding-bottom: 72px !important; }
+}
