@@ -9,7 +9,7 @@ import { featuredVendors } from "@/data/mockData"
 import type { VendorSummary } from "@/types"
 
 const pageSize = 6
-const categories = ["All", "Street food", "Produce", "Clothing"]
+const categories = ["All", "Street food", "Produce", "Clothing", "Baked goods", "Beverages"]
 
 type DiscoverPageProps = {
   onOpenVendor: (vendorId: string) => void
