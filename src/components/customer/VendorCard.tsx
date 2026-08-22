@@ -4,26 +4,19 @@ import Card from "@/components/common/Card"
 import RatingStars from "@/components/common/RatingStars"
 import type { VendorSummary } from "@/types"
 
-// SA street food hero images – verified Unsplash free photos
-const CATEGORY_IMAGES: Record<string, string> = {
-  "Street food": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80",
-  "Produce":     "https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?auto=format&fit=crop&w=800&q=80",
-  "Clothing":    "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=800&q=80",
-  "Baked goods": "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=800&q=80",
-  "Beverages":   "https://images.unsplash.com/photo-1621263764928-df1444c5e859?auto=format&fit=crop&w=800&q=80",
+// Per-vendor hero images using local photos
+const VENDOR_HERO_IMAGES: Record<string, string> = {
+  "vendor-mama-thandi":  "/images/vendors-smiling-women.jpg",
+  "vendor-bra-zakes":    "/images/vendor-cucumbers-apron.jpg",
+  "vendor-durban-bunny": "/images/market-tomatoes-stall.jpg",
+  "vendor-gatsby-cape":  "/images/colorful-fruit-stall.jpg",
+  "vendor-pap-shack":    "/images/farmer-vegetable-crate.jpg",
+  "vendor-kota-king":    "/images/colorful-peppers-market.jpg",
+  "vendor-nomsa-fresh":  "/images/fresh-produce-shelves.jpg",
+  "vendor-sipho-style":  "/images/diverse-market-team.jpg",
 }
 
-// Per-vendor hero images for SA street food vendors
-const VENDOR_HERO_IMAGES: Record<string, string> = {
-  "vendor-mama-thandi":  "https://images.unsplash.com/photo-1565299507177-b0ac66763828?auto=format&fit=crop&w=800&q=80",  // fried dough
-  "vendor-bra-zakes":    "https://images.unsplash.com/photo-1612392062631-94b4a7657f5a?auto=format&fit=crop&w=800&q=80",  // grilled sausage roll
-  "vendor-durban-bunny": "https://images.unsplash.com/photo-1574894709920-11b28e7367e3?auto=format&fit=crop&w=800&q=80",  // curry bread bowl
-  "vendor-gatsby-cape":  "https://images.unsplash.com/photo-1481070414801-51fd732d7184?auto=format&fit=crop&w=800&q=80",  // large sub sandwich
-  "vendor-pap-shack":    "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?auto=format&fit=crop&w=800&q=80",  // grilled chicken
-  "vendor-kota-king":    "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80",  // filled bread
-  "vendor-nomsa-fresh":  "https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?auto=format&fit=crop&w=800&q=80",  // fresh fruit
-  "vendor-sipho-style":  "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=800&q=80",  // clothing
-}
+const FALLBACK_IMAGE = "/images/customer-shopping-market.jpg"
 
 type VendorCardProps = {
   vendor: VendorSummary
@@ -31,7 +24,7 @@ type VendorCardProps = {
 }
 
 export default function VendorCard({ onOpen, vendor }: VendorCardProps) {
-  const heroImage = VENDOR_HERO_IMAGES[vendor.id] ?? CATEGORY_IMAGES[vendor.category] ?? CATEGORY_IMAGES["Street food"]
+  const heroImage = VENDOR_HERO_IMAGES[vendor.id] ?? FALLBACK_IMAGE
 
   return (
     <Card className="overflow-hidden p-0">
