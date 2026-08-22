@@ -1,0 +1,124 @@
+﻿generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  phone     String?
+  userType  String   @default("customer")
+  
+  vendor    Vendor?
+  orders    Order[]
+  reviews   Review[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Vendor {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  businessName String
+  description String?
+  category    String
+  
+  latitude    Float?
+  longitude   Float?
+  location    String?
+  
+  rating      Float    @default(0)
+  reviewCount Int      @default(0)
+  
+  isActive    Boolean  @default(true)
+  isVerified  Boolean  @default(false)
+  
+  products    Product[]
+  orders      Order[]
+  reviews     Review[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Product {
+  id        String   @id @default(cuid())
+  vendorId  String
+  vendor    Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  
+  name      String
+  description String?
+  price     Float
+  image     String?
+  
+  orderItems OrderItem[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Order {
+  id        String   @id @default(cuid())
+  customerId String
+  customer  User     @relation(fields: [customerId], references: [id])
+  
+  vendorId  String
+  vendor    Vendor   @relation(fields: [vendorId], references: [id])
+  
+  status    String   @default("pending")
+  totalAmount Float
+  paymentMethod String
+  
+  items     OrderItem[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model OrderItem {
+  id        String   @id @default(cuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  
+  quantity  Int
+  price     Float
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  vendorId  String
+  vendor    Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  
+  customerId String
+  customer  User     @relation(fields: [customerId], references: [id])
+  
+  rating    Int
+  comment   String?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Location {
+  id        String   @id @default(cuid())
+  name      String
+  latitude  Float
+  longitude Float
+  city      String
+  country   String   @default("South Africa")
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
