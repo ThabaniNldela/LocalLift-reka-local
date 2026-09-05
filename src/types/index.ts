@@ -91,8 +91,17 @@ export type Order = {
   items: OrderItem[]
   notes?: string
   paymentMethod: string
+  receipt?: {
+    sentAt?: string
+    status: "sent" | "pending" | "pending_configuration" | "failed"
+  }
   status: OrderStatus
   totalAmount: number
+  tracking?: {
+    customer: { latitude: number; longitude: number }
+    driver?: { latitude: number; longitude: number; updatedAt: string }
+    vendor: { latitude: number; longitude: number }
+  }
   updatedAt: string
   vendorId: string
   vendorName?: string
@@ -114,6 +123,7 @@ export type CheckoutPayload = {
   items: Array<{ productId: string; quantity: number }>
   notes?: string
   paymentMethod: string
+  paymentIntentId?: string
   phone?: string
 }
 

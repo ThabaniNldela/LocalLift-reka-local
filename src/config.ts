@@ -15,6 +15,7 @@ export const API_CONFIG = {
     orders: "/orders",
     products: "/products",
     reviews: "/reviews",
+    payments: "/payments",
     vendors: "/vendors",
   },
   retry: {
@@ -38,7 +39,7 @@ export const config = {
   features: {
     vendorListingEnabled: true,
     authenticationEnabled: true,
-    paymentProcessingEnabled: false,
+    paymentProcessingEnabled: Boolean(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY),
     reviewSystemEnabled: true,
   },
 }

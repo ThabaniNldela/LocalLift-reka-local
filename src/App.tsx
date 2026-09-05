@@ -20,6 +20,7 @@ import OrderConfirmationPage from "@/pages/customer/OrderConfirmationPage"
 import OrderHistoryPage from "@/pages/customer/OrderHistoryPage"
 import RegisterPage from "@/pages/customer/RegisterPage"
 import VendorDetailsPage from "@/pages/customer/VendorDetailsPage"
+import ImpactHubPage from "@/pages/shared/ImpactHubPage"
 import NotFoundPage from "@/pages/shared/NotFoundPage"
 import VendorAnalyticsPage from "@/pages/vendor/VendorAnalyticsPage"
 import VendorDashboardPage from "@/pages/vendor/VendorDashboardPage"
@@ -91,6 +92,8 @@ export default function App() {
         return <HomePage onBrowse={() => guardedNavigate("discover")} onOpenVendor={(vendorId) => guardedNavigate("vendor-details", { vendorId })} onVendorJoin={() => navigate("register", { userType: "vendor" })} />
       case "discover":
         return <DiscoverPage onOpenVendor={(vendorId) => guardedNavigate("vendor-details", { vendorId })} />
+      case "impact":
+        return <ImpactHubPage onBrowse={() => guardedNavigate("discover")} onVendorDashboard={() => guardedNavigate("vendor-dashboard")} />
       case "vendor-details":
         return <VendorDetailsPage onBack={() => guardedNavigate("discover")} vendorId={route.params?.vendorId || "vendor-mama-thandi"} />
       case "cart":

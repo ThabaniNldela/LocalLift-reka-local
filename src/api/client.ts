@@ -159,6 +159,36 @@ export const ordersApi = {
       body: { status },
       token,
     }),
+  tracking: (token: string, orderId: string) =>
+    apiRequest<{ orderId: string; status: OrderStatus; tracking: NonNullable<Order["tracking"]>; updatedAt: string }>(
+      `${API_CONFIG.endpoints.orders}/${orderId}/tracking`,
+      { token },
+    ),
+  updateTracking: (token: string, orderId: string, latitude: number, longitude: number) =>
+    apiRequest<{ orderId: string; tracking: NonNullable<Order["tracking"]>; updatedAt: string }>(
+      `${API_CONFIG.endpoints.orders}/${orderId}/tracking`,
+      { method: "PATCH", body: { latitude, longitude }, token },
+    ),
+  resendReceipt: (token: string, orderId: string) =>
+    apiRequest<{ receipt: NonNullable<Order["receipt"]> }>(
+      `${API_CONFIG.endpoints.orders}/${orderId}/resend-receipt`,
+      { method: "POST", token },
+    ),
+}
+
+export type PaymentIntentResponse = {
+  clientSecret: string
+  paymentIntentId: string
+  totalAmount: number
+}
+
+export const paymentsApi = {
+  createIntent: (token: string, items: CheckoutPayload["items"]) =>
+    apiRequest<PaymentIntentResponse>(`${API_CONFIG.endpoints.payments}/create-intent`, {
+      method: "POST",
+      body: { items },
+      token,
+    }),
 }
 
 export const dashboardApi = {

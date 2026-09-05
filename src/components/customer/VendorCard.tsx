@@ -6,13 +6,13 @@ import type { VendorSummary } from "@/types"
 
 // Per-vendor hero images using local photos
 const VENDOR_HERO_IMAGES: Record<string, string> = {
-  "vendor-mama-thandi":  "/images/vendors-smiling-women.jpg",
+  "vendor-mama-thandi":  "/images/vetkoek-filled.jpg",
   "vendor-bra-zakes":    "/images/vendor-cucumbers-apron.jpg",
   "vendor-durban-bunny": "/images/market-tomatoes-stall.jpg",
   "vendor-gatsby-cape":  "/images/colorful-fruit-stall.jpg",
-  "vendor-pap-shack":    "/images/farmer-vegetable-crate.jpg",
-  "vendor-kota-king":    "/images/colorful-peppers-market.jpg",
-  "vendor-nomsa-fresh":  "/images/fresh-produce-shelves.jpg",
+  "vendor-pap-shack":    "/images/pap-meat-and-vegetables.jpg",
+  "vendor-kota-king":    "/images/loaded-kota.jpg",
+  "vendor-nomsa-fresh":  "/images/farmer-harvesting-greens.jpg",
   "vendor-sipho-style":  "/images/diverse-market-team.jpg",
 }
 

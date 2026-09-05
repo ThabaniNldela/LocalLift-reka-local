@@ -1,6 +1,7 @@
 import Badge from "@/components/common/Badge"
 import Button from "@/components/common/Button"
 import Card from "@/components/common/Card"
+import OrderTrackingMap from "@/components/common/OrderTrackingMap"
 import SectionHeading from "@/components/common/SectionHeading"
 import type { Order } from "@/types"
 import { formatCurrency, formatDateTime } from "@/utils/format"
@@ -25,6 +26,15 @@ export default function OrderConfirmationPage({ onTrackOrder, order }: OrderConf
           <div className="flex justify-between"><span>Vendor</span><span>{order.vendorName}</span></div>
           <div className="flex justify-between"><span>Payment</span><span>{order.paymentMethod}</span></div>
           <div className="flex justify-between"><span>Total</span><span>{formatCurrency(order.totalAmount)}</span></div>
+        </div>
+        {order.receipt?.status === "sent" ? (
+          <p className="rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-800">Receipt sent to your email.</p>
+        ) : (
+          <p className="rounded-xl bg-amber-50 px-4 py-3 text-sm text-amber-800">Your order is confirmed. Your email receipt will be sent when email delivery is configured.</p>
+        )}
+        <div className="text-left">
+          <p className="mb-2 text-sm font-semibold text-slate-900">Track delivery</p>
+          <OrderTrackingMap order={order} />
         </div>
         <Button onClick={onTrackOrder}>Track order</Button>
       </Card>

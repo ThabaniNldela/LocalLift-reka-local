@@ -12,6 +12,7 @@ type HeaderProps = {
 const customerLinks = [
   { id: "home", label: "Home" },
   { id: "discover", label: "Discover" },
+  { id: "impact", label: "Impact" },
   { id: "orders", label: "Orders" },
   { id: "profile", label: "Account" },
 ]
@@ -21,6 +22,7 @@ const vendorLinks = [
   { id: "vendor-products", label: "Products" },
   { id: "vendor-orders", label: "Orders" },
   { id: "vendor-analytics", label: "Analytics" },
+  { id: "impact", label: "Impact" },
   { id: "vendor-profile", label: "Profile" },
   { id: "vendor-settings", label: "Settings" },
 ]

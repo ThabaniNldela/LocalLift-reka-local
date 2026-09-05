@@ -1,6 +1,7 @@
 import { useState } from "react"
 
 import Card from "@/components/common/Card"
+import OrderTrackingMap from "@/components/common/OrderTrackingMap"
 import SectionHeading from "@/components/common/SectionHeading"
 import OrderStatusSelect from "@/components/vendor/OrderStatusSelect"
 import { demoOrders } from "@/data/mockData"
@@ -19,9 +20,19 @@ export default function VendorOrdersPage() {
       <SectionHeading eyebrow="Orders" title="Manage incoming orders" description="Confirm orders, update statuses, and coordinate with customers efficiently." />
       <div className="space-y-4">
         {orders.map((order) => (
-          <Card key={order.id} title={`${order.customerName} • ${formatCurrency(order.totalAmount)}`} subtitle={formatDateTime(order.createdAt)}>
+          <Card key={order.id} title={`${order.customerName} • ${formatCurrency(order.totalAmount)}`} subtitle={`Order ${order.id} · ${formatDateTime(order.createdAt)}`}>
             <div className="grid gap-4 lg:grid-cols-[1.3fr_0.7fr]">
               <div>
+                <div className="mb-4 grid gap-3 rounded-2xl bg-emerald-50 p-4 text-sm sm:grid-cols-2">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wider text-emerald-700">Customer name</p>
+                    <p className="mt-1 font-semibold text-slate-900">{order.customerName || "Customer"}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wider text-emerald-700">Customer ID</p>
+                    <p className="mt-1 break-all font-mono text-xs text-slate-700">{order.customerId}</p>
+                  </div>
+                </div>
                 <p className="text-sm font-medium text-slate-900">Items</p>
                 <ul className="mt-3 space-y-2 text-sm text-slate-600">
                   {order.items.map((item) => (
@@ -31,6 +42,10 @@ export default function VendorOrdersPage() {
                     </li>
                   ))}
                 </ul>
+                <div className="mt-5">
+                  <p className="mb-2 text-sm font-medium text-slate-900">Live order map</p>
+                  <OrderTrackingMap order={order} />
+                </div>
               </div>
               <div className="space-y-4">
                 <div>

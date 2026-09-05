@@ -16,12 +16,12 @@ const VENDOR_PHOTOS = [
 ]
 
 const GALLERY = [
-  { src: "/images/fresh-produce-shelves.jpg", label: "Fresh Produce" },
-  { src: "/images/customer-shopping-market.jpg", label: "Local Markets" },
-  { src: "/images/farmer-vegetable-crate.jpg", label: "Farm to Table" },
-  { src: "/images/diverse-market-team.jpg", label: "Community Vendors" },
-  { src: "/images/african-pickles-market.jpg", label: "Traditional Foods" },
-  { src: "/images/colorful-peppers-market.jpg", label: "Fresh Spices" },
+  { src: "/images/farmer-harvesting-greens.jpg", label: "Local growers" },
+  { src: "/images/greenhouse-growing.jpg", label: "Greenhouse produce" },
+  { src: "/images/local-farm-harvest.jpg", label: "Farm harvests" },
+  { src: "/images/dairy-farmer.jpg", label: "Dairy partners" },
+  { src: "/images/cattle-farm.jpg", label: "Livestock farmers" },
+  { src: "/images/local-delivery-routes.jpg", label: "Delivery routes" },
 ]
 
 const CATEGORIES = [

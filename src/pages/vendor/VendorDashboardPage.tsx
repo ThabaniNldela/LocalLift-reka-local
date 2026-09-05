@@ -48,6 +48,21 @@ export default function VendorDashboardPage() {
           </div>
         </Card>
       </div>
+      <section className="grid gap-6 lg:grid-cols-2">
+        <Card title="Food rescue opportunity" subtitle="Turn remaining fresh stock into income before closing time.">
+          <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5">
+            <p className="font-semibold text-slate-900">7 Mince Vetkoek packs are still available</p>
+            <p className="mt-2 text-sm leading-6 text-slate-600">Offer them at R18 instead of R28 from 17:15. This could recover R126 in revenue while preventing food waste.</p>
+            <button className="mt-4 rounded-xl bg-amber-500 px-4 py-2 text-sm font-semibold text-slate-950">Create rescue offer</button>
+          </div>
+        </Card>
+        <Card title="AI business coach" subtitle="Clear actions, based on your local sales patterns.">
+          <div className="space-y-3 text-sm">
+            <div className="rounded-2xl bg-emerald-50 p-4 text-emerald-950">📈 Prepare 18 additional Mince Vetkoek portions for tomorrow&apos;s lunch peak.</div>
+            <div className="rounded-2xl bg-slate-50 p-4 text-slate-700">🤝 Invite 12 returning customers back with a R10 loyalty offer.</div>
+          </div>
+        </Card>
+      </section>
     </div>
   )
 }

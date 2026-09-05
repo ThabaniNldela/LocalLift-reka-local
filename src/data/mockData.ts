@@ -1,7 +1,7 @@
 import type { DashboardStats, Order, Product, Review, UserProfile, Vendor, VendorSummary } from "@/types"
 
 // ─── Real South African street food vendors ─────────────────────────────────
-// Images sourced from Unsplash (free to use, no attribution required)
+// Local imagery is used for authentic South African dishes and farm sourcing.
 // Foods: Vetkoek, Bunny Chow, Boerewors Roll, Gatsby, Pap & Wors, Kotas, Amagwinya
 
 export const featuredVendors: VendorSummary[] = [
@@ -124,8 +124,7 @@ export const productsByVendor: Record<string, Product[]> = {
       description: "Two golden vetkoek filled with spiced savoury mince. Crispy outside, soft inside.",
       price: 28,
       stock: 45,
-      // deep fried bread / doughnuts - closest free image
-      image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&w=800&q=80",
+      image: "/images/vetkoek-filled.jpg",
     },
     {
       id: "prod-vetkoek-atchar",
@@ -135,7 +134,7 @@ export const productsByVendor: Record<string, Product[]> = {
       description: "Hot vetkoek with tangy mango atchar – a vegetarian township favourite.",
       price: 22,
       stock: 30,
-      image: "https://images.unsplash.com/photo-1565299507177-b0ac66763828?auto=format&fit=crop&w=800&q=80",
+      image: "/images/amagwinya-fried-bread.jpg",
     },
     {
       id: "prod-vetkoek-cheese",
@@ -145,7 +144,7 @@ export const productsByVendor: Record<string, Product[]> = {
       description: "Soft amagwinya with melted cheese and fresh tomato. Kids love it.",
       price: 20,
       stock: 40,
-      image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80",
+      image: "/images/vetkoek-filled.jpg",
     },
     {
       id: "prod-vetkoek-chicken",
@@ -155,7 +154,7 @@ export const productsByVendor: Record<string, Product[]> = {
       description: "Creamy Cape Malay-style chicken curry stuffed inside fresh vetkoek.",
       price: 35,
       stock: 25,
-      image: "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=800&q=80",
+      image: "/images/amagwinya-fried-bread.jpg",
     },
   ],
 
@@ -280,8 +279,7 @@ export const productsByVendor: Record<string, Product[]> = {
       description: "Creamy soft pap with a generous portion of grilled boerewors, tomato gravy, and chakalaka.",
       price: 55,
       stock: 30,
-      // pap/porridge plate
-      image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80",
+      image: "/images/pap-meat-and-vegetables.jpg",
     },
     {
       id: "prod-pap-morogo",
@@ -291,7 +289,7 @@ export const productsByVendor: Record<string, Product[]> = {
       description: "Traditional maize pap with steamed morogo (wild spinach) and grilled chicken pieces.",
       price: 65,
       stock: 20,
-      image: "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?auto=format&fit=crop&w=800&q=80",
+      image: "/images/pap-meat-and-vegetables.jpg",
     },
     {
       id: "prod-pap-umleqwa",
@@ -301,7 +299,7 @@ export const productsByVendor: Record<string, Product[]> = {
       description: "Township-style free-range chicken, slow-cooked in a rich tomato and onion sauce. Served with pap.",
       price: 80,
       stock: 15,
-      image: "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=800&q=80",
+      image: "/images/pap-meat-and-vegetables.jpg",
     },
   ],
 
@@ -314,7 +312,7 @@ export const productsByVendor: Record<string, Product[]> = {
       description: "Quarter loaf loaded with polony, fried egg, chips, atchar, and tomato sauce. A Vaal legend.",
       price: 35,
       stock: 50,
-      image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80",
+      image: "/images/loaded-kota.jpg",
     },
     {
       id: "prod-kota-russian",
@@ -324,7 +322,7 @@ export const productsByVendor: Record<string, Product[]> = {
       description: "Quarter loaf with sliced Russian sausage, chips, atchar, and extra cheese.",
       price: 40,
       stock: 45,
-      image: "https://images.unsplash.com/photo-1612392062631-94b4a7657f5a?auto=format&fit=crop&w=800&q=80",
+      image: "/images/kota-cheese-sausage.jpg",
     },
     {
       id: "prod-kota-special",
@@ -334,7 +332,7 @@ export const productsByVendor: Record<string, Product[]> = {
       description: "The full load: polony, Russian, egg, atchar, chips, cheese, chakalaka, and peri-peri.",
       price: 55,
       stock: 30,
-      image: "https://images.unsplash.com/photo-1565299507177-b0ac66763828?auto=format&fit=crop&w=800&q=80",
+      image: "/images/kota-cheese-sausage-alternate.jpg",
     },
   ],
 
@@ -347,7 +345,7 @@ export const productsByVendor: Record<string, Product[]> = {
       description: "Mango, pineapple, watermelon, and litchi — sliced fresh to order.",
       price: 35,
       stock: 25,
-      image: "https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?auto=format&fit=crop&w=800&q=80",
+      image: "/images/farmer-harvesting-greens.jpg",
     },
     {
       id: "prod-green-smoothie",
@@ -357,7 +355,7 @@ export const productsByVendor: Record<string, Product[]> = {
       description: "Spinach, green apple, cucumber, ginger, and a squeeze of lemon.",
       price: 42,
       stock: 18,
-      image: "https://images.unsplash.com/photo-1623065422902-30a2d299bbe4?auto=format&fit=crop&w=800&q=80",
+      image: "/images/greenhouse-growing.jpg",
     },
   ],
 
@@ -427,6 +425,10 @@ export const demoOrders: Order[] = [
     ],
     createdAt: "2026-08-21T09:00:00Z",
     updatedAt: "2026-08-21T09:15:00Z",
+    tracking: {
+      vendor: { latitude: -25.7479, longitude: 28.2293 },
+      customer: { latitude: -25.7546, longitude: 28.2382 },
+    },
   },
   {
     id: "order-1002",
@@ -444,6 +446,10 @@ export const demoOrders: Order[] = [
     ],
     createdAt: "2026-08-18T11:30:00Z",
     updatedAt: "2026-08-18T12:10:00Z",
+    tracking: {
+      vendor: { latitude: -29.8587, longitude: 31.0218 },
+      customer: { latitude: -29.865, longitude: 31.03 },
+    },
   },
   {
     id: "order-1003",
@@ -461,6 +467,11 @@ export const demoOrders: Order[] = [
     ],
     createdAt: "2026-08-22T10:00:00Z",
     updatedAt: "2026-08-22T10:25:00Z",
+    tracking: {
+      vendor: { latitude: -26.2672, longitude: 27.8621 },
+      customer: { latitude: -26.278, longitude: 27.878 },
+      driver: { latitude: -26.273, longitude: 27.871, updatedAt: "2026-08-22T10:25:00Z" },
+    },
   },
 ]
 
