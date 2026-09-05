@@ -3,7 +3,7 @@ services:
     name: reka-local
     runtime: node
     plan: free
-    buildCommand: npm ci && npm --prefix Backend ci && npm run build
+    buildCommand: npm ci --include=dev && npm --prefix Backend ci && npm run build
     startCommand: npm --prefix Backend start
     healthCheckPath: /health
     autoDeployTrigger: commit
