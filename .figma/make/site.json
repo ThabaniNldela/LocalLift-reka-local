@@ -1,0 +1,10 @@
+{
+  "description": "Delivers a polished, attractive frontend interface that enhances user engagement and effectively communicates ideas to target audiences.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}

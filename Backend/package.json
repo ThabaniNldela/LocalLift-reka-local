@@ -1,0 +1,31 @@
+{
+  "name": "reka-local-backend",
+  "version": "1.0.0",
+  "description": "Reka Local Backend API",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:generate": "prisma generate"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@prisma/client": "^6.19.3",
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "nodemailer": "^10.0.0",
+    "prisma": "^6.19.3",
+    "stripe": "^22.6.1"
+  },
+  "devDependencies": {
+    "@types/nodemailer": "^8.0.1",
+    "nodemon": "^3.1.14"
+  }
+}
