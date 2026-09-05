@@ -1,25 +1,38 @@
-import React, { useState, useEffect } from 'react'
-import { useAuth } from '@/context/AuthContext'
-import Input from '@/components/Input'
-import Button from '@/components/Button'
-import { validateEmail, validatePhone } from '@/utils/helpers'
+import React, { useState, useEffect } from "react"
+
+import { useAuth } from "@/context/AuthContext"
+
+import Input from "@/components/Input"
+
+import Button from "@/components/Button"
+
+import { validateEmail, validatePhone } from "@/utils/helpers"
 
 export const Register: React.FC = () => {
   const { register, isLoading, error: authError } = useAuth()
-  const [userType, setUserType] = useState<'customer' | 'vendor'>('customer')
+
+  const [userType, setUserType] = useState<"customer" | "vendor">("customer")
+
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    phone: '',
+    name: "",
+
+    email: "",
+
+    password: "",
+
+    confirmPassword: "",
+
+    phone: "",
   })
+
   const [errors, setErrors] = useState<Record<string, string>>({})
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
-    const type = params.get('type')
-    if (type === 'vendor' || type === 'customer') {
+
+    const type = params.get("type")
+
+    if (type === "vendor" || type === "customer") {
       setUserType(type)
     }
   }, [])
@@ -27,40 +40,54 @@ export const Register: React.FC = () => {
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
 
-    if (!formData.name) newErrors.name = 'Name is required'
-    if (!formData.email) newErrors.email = 'Email is required'
-    else if (!validateEmail(formData.email)) newErrors.email = 'Invalid email format'
+    if (!formData.name) newErrors.name = "Name is required"
 
-    if (!formData.password) newErrors.password = 'Password is required'
-    else if (formData.password.length < 8) newErrors.password = 'Password must be at least 8 characters'
+    if (!formData.email) newErrors.email = "Email is required"
+    else if (!validateEmail(formData.email))
+      newErrors.email = "Invalid email format"
+
+    if (!formData.password) newErrors.password = "Password is required"
+    else if (formData.password.length < 8)
+      newErrors.password = "Password must be at least 8 characters"
 
     if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match'
+      newErrors.confirmPassword = "Passwords do not match"
     }
 
-    if (userType === 'vendor' && formData.phone && !validatePhone(formData.phone)) {
-      newErrors.phone = 'Invalid phone number'
+    if (
+      userType === "vendor" &&
+      formData.phone &&
+      !validatePhone(formData.phone)
+    ) {
+      newErrors.phone = "Invalid phone number"
     }
 
     setErrors(newErrors)
+
     return Object.keys(newErrors).length === 0
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
     if (!validateForm()) return
 
     try {
-      await register(
-        formData.email,
-        formData.password,
-        formData.name,
+      await register({
+        email: formData.email,
+
+        name: formData.name,
+
+        password: formData.password,
+
+        phone: formData.phone,
+
         userType,
-        formData.phone
-      )
-      window.location.href = '/'
+      })
+
+      window.location.href = "/"
     } catch (err) {
-      console.error('Registration failed:', err)
+      console.error("Registration failed:", err)
     }
   }
 
@@ -77,7 +104,9 @@ export const Register: React.FC = () => {
                 />
               </svg>
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">Join Reka Local</h1>
+            <h1 className="text-2xl font-bold text-gray-900">
+              Join Reka Local
+            </h1>
             <p className="text-gray-600 mt-2">Create your account</p>
           </div>
 
@@ -88,20 +117,21 @@ export const Register: React.FC = () => {
           )}
 
           <div className="mb-6 flex gap-2">
-            {(['customer', 'vendor'] as const).map((type) => (
+            {(["customer", "vendor"] as const).map((type) => (
               <button
                 key={type}
                 onClick={() => {
                   setUserType(type)
+
                   setErrors({})
                 }}
                 className={`flex-1 py-2 px-4 rounded-lg font-medium transition-colors ${
                   userType === type
-                    ? 'bg-emerald-700 text-white'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    ? "bg-emerald-700 text-white"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                 }`}
               >
-                {type === 'customer' ? 'Customer' : 'Vendor'}
+                {type === "customer" ? "Customer" : "Vendor"}
               </button>
             ))}
           </div>
@@ -110,7 +140,9 @@ export const Register: React.FC = () => {
             <Input
               label="Full Name"
               value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
               error={errors.name}
               placeholder="John Doe"
             />
@@ -119,17 +151,21 @@ export const Register: React.FC = () => {
               label="Email"
               type="email"
               value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
               error={errors.email}
               placeholder="you@example.com"
             />
 
-            {userType === 'vendor' && (
+            {userType === "vendor" && (
               <Input
                 label="Phone Number (Optional)"
                 type="tel"
                 value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, phone: e.target.value })
+                }
                 error={errors.phone}
                 placeholder="+1 (555) 000-0000"
               />
@@ -139,7 +175,9 @@ export const Register: React.FC = () => {
               label="Password"
               type="password"
               value={formData.password}
-              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
               error={errors.password}
               placeholder="••••••••"
               helperText="At least 8 characters"
@@ -149,15 +187,20 @@ export const Register: React.FC = () => {
               label="Confirm Password"
               type="password"
               value={formData.confirmPassword}
-              onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, confirmPassword: e.target.value })
+              }
               error={errors.confirmPassword}
               placeholder="••••••••"
             />
 
             <label className="flex items-center">
-              <input type="checkbox" className="w-4 h-4 text-emerald-700 rounded" />
+              <input
+                type="checkbox"
+                className="w-4 h-4 text-emerald-700 rounded"
+              />
               <span className="ml-2 text-sm text-gray-600">
-                I agree to the{' '}
+                I agree to the{" "}
                 <a href="#" className="text-emerald-700 hover:text-emerald-800">
                   Terms of Service
                 </a>
@@ -170,8 +213,11 @@ export const Register: React.FC = () => {
           </form>
 
           <p className="text-center text-gray-600 text-sm mt-6">
-            Already have an account?{' '}
-            <a href="/login" className="text-emerald-700 hover:text-emerald-800 font-semibold">
+            Already have an account?{" "}
+            <a
+              href="/login"
+              className="text-emerald-700 hover:text-emerald-800 font-semibold"
+            >
               Sign in
             </a>
           </p>

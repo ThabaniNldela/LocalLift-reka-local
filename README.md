@@ -156,12 +156,26 @@ pnpm run build
 figma make deploy --build-dir dist
 ```
 
-### Backend Deployment
+### Production deployment on Render
 
-Deploy backend to your hosting platform:
-- Node.js server
-- PostgreSQL database
-- Environment variables must be set on the host
+The repository includes `render.yaml`, which deploys the React build and Express
+API together as one Render web service. Customers, vendors, and farmers use one
+HTTPS URL, so API requests remain on the same origin.
+
+1. Push this branch to GitHub.
+2. In Render, choose **New +** → **Blueprint**, connect this repository, and
+   select `render.yaml`.
+3. Render creates the `reka-local` web service and `reka-local-db` PostgreSQL
+   database, generates `JWT_SECRET`, and provides the final `https://...onrender.com`
+   URL.
+4. In the Render service's **Environment** tab, set `STRIPE_SECRET_KEY` and the
+   SMTP variables only when live card payments and email receipts are required.
+   Keep all secrets in Render; never commit them to this repository.
+
+The active API currently uses in-memory demo stores while its Prisma persistence
+layer is completed. The provided PostgreSQL database and `DATABASE_URL` are ready
+for that migration, but accounts, orders, and harvest reservations will reset
+after a web-service restart until those routes are persisted through Prisma.
 
 ## Development
 

@@ -1,50 +1,74 @@
-import React, { useState, useEffect } from 'react'
-import { useCart } from '@/context/CartContext'
-import { formatPrice } from '@/utils/helpers'
-import Card from '@/components/Card'
-import Button from '@/components/Button'
+import React, { useState, useEffect } from "react"
+
+import { useCart } from "@/context/CartContext"
+
+import { formatPrice } from "@/utils/helpers"
+
+import Card from "@/components/Card"
+
+import Button from "@/components/Button"
 
 interface Product {
   id: string
+
   name: string
+
   price: number
+
   description?: string
+
   image?: string
+
   category?: string
 }
 
 interface Vendor {
   id: string
+
   businessName: string
+
   category: string
+
   location: string
+
   rating: number
+
   reviewCount: number
+
   description?: string
+
   hours?: string
+
   image?: string
 }
 
 export const VendorDetail: React.FC = () => {
   const [vendor, setVendor] = useState<Vendor | null>(null)
-  const [products, setProducts] = useState<Product[]>([])
-  const [loading, setLoading] = useState(true)
-  const { addItem } = useCart()
 
-  const vendorId = window.location.pathname.split('/').pop() || ''
+  const [products, setProducts] = useState<Product[]>([])
+
+  const [loading, setLoading] = useState(true)
+
+  const { addToCart } = useCart()
+
+  const vendorId = window.location.pathname.split("/").pop() || ""
 
   useEffect(() => {
     const fetchVendorDetails = async () => {
       setLoading(true)
+
       try {
         const response = await fetch(`/api/vendors/${vendorId}`)
+
         if (response.ok) {
           const data = await response.json()
+
           setVendor(data.vendor)
+
           setProducts(data.products || [])
         }
       } catch (err) {
-        console.error('Failed to fetch vendor:', err)
+        console.error("Failed to fetch vendor:", err)
       } finally {
         setLoading(false)
       }
@@ -54,13 +78,8 @@ export const VendorDetail: React.FC = () => {
   }, [vendorId])
 
   const handleAddToCart = (product: Product) => {
-    addItem({
-      productId: product.id,
-      vendorId,
-      name: product.name,
-      price: product.price,
-      image: product.image,
-    })
+    addToCart({ ...product, vendorId })
+
     alert(`${product.name} added to cart!`)
   }
 
@@ -77,7 +96,7 @@ export const VendorDetail: React.FC = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <p className="text-gray-500 text-lg mb-4">Vendor not found</p>
-          <Button onClick={() => (window.location.href = '/vendors')}>
+          <Button onClick={() => (window.location.href = "/vendors")}>
             Back to Vendors
           </Button>
         </div>
@@ -103,7 +122,12 @@ export const VendorDetail: React.FC = () => {
               <p className="text-gray-600 mb-2">{vendor.category}</p>
               {vendor.location && (
                 <p className="text-gray-600 mb-2 flex items-center gap-1">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
                     <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
                   </svg>
                   {vendor.location}
@@ -120,7 +144,9 @@ export const VendorDetail: React.FC = () => {
                       width="18"
                       height="18"
                       viewBox="0 0 24 24"
-                      fill={i < Math.floor(vendor.rating) ? 'currentColor' : 'none'}
+                      fill={
+                        i < Math.floor(vendor.rating) ? "currentColor" : "none"
+                      }
                       stroke="currentColor"
                       strokeWidth="2"
                     >
@@ -159,10 +185,14 @@ export const VendorDetail: React.FC = () => {
                 )}
                 <h3 className="font-semibold text-lg mb-1">{product.name}</h3>
                 {product.category && (
-                  <p className="text-sm text-gray-500 mb-2">{product.category}</p>
+                  <p className="text-sm text-gray-500 mb-2">
+                    {product.category}
+                  </p>
                 )}
                 {product.description && (
-                  <p className="text-sm text-gray-600 mb-3">{product.description}</p>
+                  <p className="text-sm text-gray-600 mb-3">
+                    {product.description}
+                  </p>
                 )}
                 <div className="flex justify-between items-center">
                   <span className="text-lg font-bold text-emerald-700">

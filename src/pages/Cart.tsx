@@ -1,13 +1,18 @@
-import React from 'react'
-import { useCart } from '@/context/CartContext'
-import { formatPrice } from '@/utils/helpers'
-import Button from '@/components/Button'
-import Card from '@/components/Card'
+import React from "react"
+
+import { useCart } from "@/context/CartContext"
+
+import { formatPrice } from "@/utils/helpers"
+
+import Button from "@/components/Button"
+
+import Card from "@/components/Card"
 
 export const Cart: React.FC = () => {
-  const { items, total, removeItem, updateQuantity, clearCart, getItemsByVendor } = useCart()
+  const { cartItems, subtotal, removeFromCart, updateQuantity, clearCart } =
+    useCart()
 
-  if (items.length === 0) {
+  if (cartItems.length === 0) {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center">
         <div className="text-center">
@@ -24,9 +29,13 @@ export const Cart: React.FC = () => {
             <circle cx="20" cy="21" r="1" />
             <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
           </svg>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Your cart is empty</h2>
-          <p className="text-gray-600 mb-6">Add some items from your favorite vendors</p>
-          <Button onClick={() => (window.location.href = '/vendors')}>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            Your cart is empty
+          </h2>
+          <p className="text-gray-600 mb-6">
+            Add some items from your favorite vendors
+          </p>
+          <Button onClick={() => (window.location.href = "/vendors")}>
             Continue Shopping
           </Button>
         </div>
@@ -34,10 +43,12 @@ export const Cart: React.FC = () => {
     )
   }
 
-  const vendors = Array.from(new Set(items.map((item) => item.vendorId)))
-  const subtotal = total
+  const vendors = Array.from(new Set(cartItems.map((item) => item.vendorId)))
+
   const tax = subtotal * 0.08
+
   const shipping = subtotal > 50 ? 0 : 5
+
   const grandTotal = subtotal + tax + shipping
 
   return (
@@ -49,16 +60,21 @@ export const Cart: React.FC = () => {
           {/* Cart Items */}
           <div className="lg:col-span-2 space-y-6">
             {vendors.map((vendorId) => {
-              const vendorItems = getItemsByVendor(vendorId)
-              const vendorName = vendorItems[0]?.vendorId
+              const vendorItems = cartItems.filter(
+                (item) => item.vendorId === vendorId,
+              )
+
+              const vendorName = vendorItems[0]?.vendorName
 
               return (
                 <Card key={vendorId}>
-                  <h3 className="font-semibold text-lg mb-4">Order from Vendor {vendorName}</h3>
+                  <h3 className="font-semibold text-lg mb-4">
+                    Order from Vendor {vendorName}
+                  </h3>
                   <div className="space-y-4">
                     {vendorItems.map((item) => (
                       <div
-                        key={item.id}
+                        key={item.productId}
                         className="flex gap-4 pb-4 border-b border-gray-200 last:border-0"
                       >
                         {item.image && (
@@ -76,28 +92,37 @@ export const Cart: React.FC = () => {
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() =>
-                                updateQuantity(item.id, Math.max(1, item.quantity - 1))
+                                updateQuantity(
+                                  item.productId,
+                                  Math.max(1, item.quantity - 1),
+                                )
                               }
                               className="p-1 hover:bg-gray-100 rounded"
                             >
                               −
                             </button>
-                            <span className="w-8 text-center">{item.quantity}</span>
+                            <span className="w-8 text-center">
+                              {item.quantity}
+                            </span>
                             <button
                               onClick={() =>
-                                updateQuantity(item.id, item.quantity + 1)
+                                updateQuantity(
+                                  item.productId,
+                                  item.quantity + 1,
+                                )
                               }
                               className="p-1 hover:bg-gray-100 rounded"
                             >
                               +
                             </button>
                             <span className="text-sm text-gray-600 ml-4">
-                              Subtotal: {formatPrice(item.price * item.quantity)}
+                              Subtotal:{" "}
+                              {formatPrice(item.price * item.quantity)}
                             </span>
                           </div>
                         </div>
                         <button
-                          onClick={() => removeItem(item.id)}
+                          onClick={() => removeFromCart(item.productId)}
                           className="text-red-600 hover:text-red-700 font-medium text-sm"
                         >
                           Remove
@@ -140,14 +165,17 @@ export const Cart: React.FC = () => {
                 <span>{formatPrice(grandTotal)}</span>
               </div>
 
-              <Button className="w-full mb-3" onClick={() => (window.location.href = '/checkout')}>
+              <Button
+                className="w-full mb-3"
+                onClick={() => (window.location.href = "/checkout")}
+              >
                 Proceed to Checkout
               </Button>
 
               <Button
                 variant="outline"
                 className="w-full mb-3"
-                onClick={() => (window.location.href = '/vendors')}
+                onClick={() => (window.location.href = "/vendors")}
               >
                 Continue Shopping
               </Button>

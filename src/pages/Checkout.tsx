@@ -1,36 +1,58 @@
-import React, { useState } from 'react'
-import { useAuth } from '@/context/AuthContext'
-import { useCart } from '@/context/CartContext'
-import { formatPrice } from '@/utils/helpers'
-import Input from '@/components/Input'
-import Button from '@/components/Button'
-import Card from '@/components/Card'
+import React, { useState } from "react"
+
+import { useAuth } from "@/context/AuthContext"
+
+import { useCart } from "@/context/CartContext"
+
+import { formatPrice } from "@/utils/helpers"
+
+import Input from "@/components/Input"
+
+import Button from "@/components/Button"
+
+import Card from "@/components/Card"
 
 export const Checkout: React.FC = () => {
   const { user } = useAuth()
-  const { items, total, clearCart } = useCart()
+
+  const { cartItems, subtotal, clearCart } = useCart()
+
   const [loading, setLoading] = useState(false)
-  const [step, setStep] = useState<'shipping' | 'payment' | 'confirmation'>('shipping')
+
+  const [step, setStep] = useState<"shipping" | "payment" | "confirmation">(
+    "shipping",
+  )
+
   const [formData, setFormData] = useState({
-    shippingAddress: user?.email || '',
-    shippingCity: '',
-    shippingZip: '',
-    shippingCountry: '',
-    paymentMethod: 'card',
-    cardName: '',
-    cardNumber: '',
-    cardExpiry: '',
-    cardCVC: '',
+    shippingAddress: user?.email || "",
+
+    shippingCity: "",
+
+    shippingZip: "",
+
+    shippingCountry: "",
+
+    paymentMethod: "card",
+
+    cardName: "",
+
+    cardNumber: "",
+
+    cardExpiry: "",
+
+    cardCVC: "",
   })
+
   const [errors, setErrors] = useState<Record<string, string>>({})
+
   const [orderConfirmation, setOrderConfirmation] = useState<any>(null)
 
-  if (items.length === 0) {
+  if (cartItems.length === 0) {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center">
         <div className="text-center">
           <p className="text-gray-500 text-lg mb-4">Your cart is empty</p>
-          <Button onClick={() => (window.location.href = '/vendors')}>
+          <Button onClick={() => (window.location.href = "/vendors")}>
             Continue Shopping
           </Button>
         </div>
@@ -38,34 +60,49 @@ export const Checkout: React.FC = () => {
     )
   }
 
-  const subtotal = total
   const tax = subtotal * 0.08
+
   const shipping = subtotal > 50 ? 0 : 5
+
   const grandTotal = subtotal + tax + shipping
 
   const validateShipping = () => {
     const newErrors: Record<string, string> = {}
-    if (!formData.shippingAddress) newErrors.shippingAddress = 'Address is required'
-    if (!formData.shippingCity) newErrors.shippingCity = 'City is required'
-    if (!formData.shippingZip) newErrors.shippingZip = 'ZIP code is required'
-    if (!formData.shippingCountry) newErrors.shippingCountry = 'Country is required'
+
+    if (!formData.shippingAddress)
+      newErrors.shippingAddress = "Address is required"
+
+    if (!formData.shippingCity) newErrors.shippingCity = "City is required"
+
+    if (!formData.shippingZip) newErrors.shippingZip = "ZIP code is required"
+
+    if (!formData.shippingCountry)
+      newErrors.shippingCountry = "Country is required"
+
     setErrors(newErrors)
+
     return Object.keys(newErrors).length === 0
   }
 
   const validatePayment = () => {
     const newErrors: Record<string, string> = {}
-    if (!formData.cardName) newErrors.cardName = 'Name is required'
-    if (!formData.cardNumber) newErrors.cardNumber = 'Card number is required'
-    if (!formData.cardExpiry) newErrors.cardExpiry = 'Expiry date is required'
-    if (!formData.cardCVC) newErrors.cardCVC = 'CVC is required'
+
+    if (!formData.cardName) newErrors.cardName = "Name is required"
+
+    if (!formData.cardNumber) newErrors.cardNumber = "Card number is required"
+
+    if (!formData.cardExpiry) newErrors.cardExpiry = "Expiry date is required"
+
+    if (!formData.cardCVC) newErrors.cardCVC = "CVC is required"
+
     setErrors(newErrors)
+
     return Object.keys(newErrors).length === 0
   }
 
   const handleShippingNext = () => {
     if (validateShipping()) {
-      setStep('payment')
+      setStep("payment")
     }
   }
 
@@ -73,37 +110,49 @@ export const Checkout: React.FC = () => {
     if (!validatePayment()) return
 
     setLoading(true)
+
     try {
-      const response = await fetch('/api/orders', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/orders", {
+        method: "POST",
+
+        headers: { "Content-Type": "application/json" },
+
         body: JSON.stringify({
-          items,
+          items: cartItems,
+
           shippingAddress: formData.shippingAddress,
+
           shippingCity: formData.shippingCity,
+
           shippingZip: formData.shippingZip,
+
           shippingCountry: formData.shippingCountry,
+
           paymentMethod: formData.paymentMethod,
+
           totalAmount: grandTotal,
         }),
       })
 
       if (response.ok) {
         const data = await response.json()
+
         setOrderConfirmation(data.order)
-        setStep('confirmation')
+
+        setStep("confirmation")
+
         clearCart()
       } else {
-        setErrors({ submit: 'Failed to create order' })
+        setErrors({ submit: "Failed to create order" })
       }
     } catch (err) {
-      setErrors({ submit: 'An error occurred. Please try again.' })
+      setErrors({ submit: "An error occurred. Please try again." })
     } finally {
       setLoading(false)
     }
   }
 
-  if (step === 'confirmation' && orderConfirmation) {
+  if (step === "confirmation" && orderConfirmation) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
         <Card className="max-w-md w-full text-center">
@@ -118,9 +167,7 @@ export const Checkout: React.FC = () => {
           </p>
           <div className="text-left mb-6">
             <p className="font-semibold mb-2">Order Details:</p>
-            <p className="text-sm text-gray-600">
-              Items: {items.length}
-            </p>
+            <p className="text-sm text-gray-600">Items: {cartItems.length}</p>
             <p className="text-sm text-gray-600 mb-3">
               Total: {formatPrice(grandTotal)}
             </p>
@@ -129,12 +176,15 @@ export const Checkout: React.FC = () => {
             </p>
           </div>
           <div className="space-y-2">
-            <Button onClick={() => (window.location.href = '/orders')} className="w-full">
+            <Button
+              onClick={() => (window.location.href = "/orders")}
+              className="w-full"
+            >
               View Order
             </Button>
             <Button
               variant="secondary"
-              onClick={() => (window.location.href = '/vendors')}
+              onClick={() => (window.location.href = "/vendors")}
               className="w-full"
             >
               Continue Shopping
@@ -155,33 +205,42 @@ export const Checkout: React.FC = () => {
           <div className="lg:col-span-2">
             {/* Steps */}
             <div className="flex gap-4 mb-8">
-              {(['shipping', 'payment', 'confirmation'] as const).map((s, idx) => (
-                <div key={s} className="flex items-center">
-                  <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center font-semibold text-sm ${
-                      step === s
-                        ? 'bg-emerald-700 text-white'
-                        : ['shipping', 'payment'].includes(step) && ['shipping', 'payment'].indexOf(s) < ['shipping', 'payment'].indexOf(step)
-                          ? 'bg-green-600 text-white'
-                          : 'bg-gray-200 text-gray-600'
-                    }`}
-                  >
-                    {idx + 1}
+              {(["shipping", "payment", "confirmation"] as const).map(
+                (s, idx) => (
+                  <div key={s} className="flex items-center">
+                    <div
+                      className={`w-8 h-8 rounded-full flex items-center justify-center font-semibold text-sm ${
+                        step === s
+                          ? "bg-emerald-700 text-white"
+                          : ["shipping", "payment"].includes(step) &&
+                              ["shipping", "payment"].indexOf(s) <
+                                ["shipping", "payment"].indexOf(step)
+                            ? "bg-green-600 text-white"
+                            : "bg-gray-200 text-gray-600"
+                      }`}
+                    >
+                      {idx + 1}
+                    </div>
+                    {idx < 2 && <div className="w-8 h-1 bg-gray-200 mx-2" />}
                   </div>
-                  {idx < 2 && <div className="w-8 h-1 bg-gray-200 mx-2" />}
-                </div>
-              ))}
+                ),
+              )}
             </div>
 
-            {step === 'shipping' && (
+            {step === "shipping" && (
               <Card>
-                <h2 className="text-2xl font-bold mb-6">Shipping Information</h2>
+                <h2 className="text-2xl font-bold mb-6">
+                  Shipping Information
+                </h2>
                 <div className="space-y-4">
                   <Input
                     label="Street Address"
                     value={formData.shippingAddress}
                     onChange={(e) =>
-                      setFormData({ ...formData, shippingAddress: e.target.value })
+                      setFormData({
+                        ...formData,
+                        shippingAddress: e.target.value,
+                      })
                     }
                     error={errors.shippingAddress}
                   />
@@ -198,7 +257,10 @@ export const Checkout: React.FC = () => {
                       label="ZIP Code"
                       value={formData.shippingZip}
                       onChange={(e) =>
-                        setFormData({ ...formData, shippingZip: e.target.value })
+                        setFormData({
+                          ...formData,
+                          shippingZip: e.target.value,
+                        })
                       }
                       error={errors.shippingZip}
                     />
@@ -206,7 +268,10 @@ export const Checkout: React.FC = () => {
                       label="Country"
                       value={formData.shippingCountry}
                       onChange={(e) =>
-                        setFormData({ ...formData, shippingCountry: e.target.value })
+                        setFormData({
+                          ...formData,
+                          shippingCountry: e.target.value,
+                        })
                       }
                       error={errors.shippingCountry}
                     />
@@ -214,7 +279,7 @@ export const Checkout: React.FC = () => {
                   <div className="flex gap-4 pt-6">
                     <Button
                       variant="outline"
-                      onClick={() => (window.location.href = '/cart')}
+                      onClick={() => (window.location.href = "/cart")}
                     >
                       Back to Cart
                     </Button>
@@ -226,20 +291,26 @@ export const Checkout: React.FC = () => {
               </Card>
             )}
 
-            {step === 'payment' && (
+            {step === "payment" && (
               <Card>
                 <h2 className="text-2xl font-bold mb-6">Payment Information</h2>
                 <div className="space-y-4">
                   <div className="flex gap-4 mb-6">
-                    {['card', 'wallet', 'bank'].map((method) => (
-                      <label key={method} className="flex items-center gap-2 cursor-pointer">
+                    {["card", "wallet", "bank"].map((method) => (
+                      <label
+                        key={method}
+                        className="flex items-center gap-2 cursor-pointer"
+                      >
                         <input
                           type="radio"
                           name="paymentMethod"
                           value={method}
                           checked={formData.paymentMethod === method}
                           onChange={(e) =>
-                            setFormData({ ...formData, paymentMethod: e.target.value })
+                            setFormData({
+                              ...formData,
+                              paymentMethod: e.target.value,
+                            })
                           }
                           className="w-4 h-4"
                         />
@@ -293,7 +364,10 @@ export const Checkout: React.FC = () => {
                   )}
 
                   <div className="flex gap-4 pt-6">
-                    <Button variant="outline" onClick={() => setStep('shipping')}>
+                    <Button
+                      variant="outline"
+                      onClick={() => setStep("shipping")}
+                    >
                       Back
                     </Button>
                     <Button
@@ -314,8 +388,11 @@ export const Checkout: React.FC = () => {
             <Card>
               <h3 className="font-bold text-lg mb-4">Order Summary</h3>
               <div className="space-y-3 max-h-64 overflow-y-auto mb-6 pb-6 border-b">
-                {items.map((item) => (
-                  <div key={item.id} className="flex justify-between text-sm">
+                {cartItems.map((item) => (
+                  <div
+                    key={item.productId}
+                    className="flex justify-between text-sm"
+                  >
                     <span>
                       {item.name} x{item.quantity}
                     </span>
