@@ -2,7 +2,7 @@ services:
   - type: web
     name: reka-local
     runtime: node
-    plan: starter
+    plan: free
     buildCommand: npm ci && npm --prefix Backend ci && npm run build
     startCommand: npm --prefix Backend start
     healthCheckPath: /health
@@ -12,10 +12,6 @@ services:
         value: production
       - key: JWT_SECRET
         generateValue: true
-      - key: DATABASE_URL
-        fromDatabase:
-          name: reka-local-db
-          property: connectionString
       - key: STRIPE_SECRET_KEY
         sync: false
       - key: SMTP_HOST
@@ -28,9 +24,3 @@ services:
         sync: false
       - key: RECEIPT_FROM
         sync: false
-
-databases:
-  - name: reka-local-db
-    plan: basic-256mb
-    databaseName: reka_local
-    user: reka_local
