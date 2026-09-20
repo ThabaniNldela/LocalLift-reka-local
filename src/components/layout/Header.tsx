@@ -21,6 +21,8 @@ const customerLinks = [
 
   { id: "farmers", label: "Farmer Hub" },
 
+  { id: "home-gardens", label: "Home Gardens" },
+
   { id: "orders", label: "Orders" },
 
   { id: "profile", label: "Account" },
@@ -40,6 +42,8 @@ const vendorLinks = [
   { id: "impact", label: "Impact" },
 
   { id: "farmers", label: "Farmer Hub" },
+
+  { id: "home-gardens", label: "Home Gardens" },
 
   { id: "vendor-profile", label: "Profile" },
 

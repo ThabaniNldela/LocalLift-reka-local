@@ -44,6 +44,8 @@ import ImpactHubPage from "@/pages/shared/ImpactHubPage"
 
 import FarmerHubPage from "@/pages/shared/FarmerHubPage"
 
+import HomeGardensPage from "@/pages/shared/HomeGardensPage"
+
 import NotFoundPage from "@/pages/shared/NotFoundPage"
 
 import VendorAnalyticsPage from "@/pages/vendor/VendorAnalyticsPage"
@@ -207,6 +209,9 @@ export default function App() {
 
       case "farmers":
         return <FarmerHubPage />
+
+      case "home-gardens":
+        return <HomeGardensPage />
 
       case "vendor-details":
         return (
