@@ -186,6 +186,11 @@ export const vendorsApi = {
       {},
       { page },
     ),
+
+  products: (vendorId: string) =>
+    apiRequest<{ products: Product[] }>(
+      `${API_CONFIG.endpoints.vendors}/${vendorId}/products`,
+    ),
 }
 
 export const productsApi = {
