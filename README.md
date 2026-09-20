@@ -165,16 +165,17 @@ HTTPS URL, so API requests remain on the same origin.
 1. Push this branch to GitHub.
 2. In Render, choose **New +** → **Blueprint**, connect this repository, and
    select `render.yaml`.
-3. Render creates the `reka-local` free web service, generates `JWT_SECRET`,
-   and provides the final `https://...onrender.com` URL.
+3. Render creates the `reka-local` free web service and `reka-local-db`
+   PostgreSQL database, generates `JWT_SECRET`, and provides the final
+   `https://...onrender.com` URL.
 4. In the Render service's **Environment** tab, set `STRIPE_SECRET_KEY` and the
    SMTP variables only when live card payments and email receipts are required.
    Keep all secrets in Render; never commit them to this repository.
 
-The active API currently uses in-memory demo stores while its Prisma persistence
-layer is completed. On Render's free plan, accounts, orders, and harvest
-reservations reset after a service restart. Upgrade to a managed database and
-migrate the API routes to Prisma before using the system for permanent records.
+Accounts are stored in PostgreSQL when the Render Blueprint configures
+`DATABASE_URL`, so registration and login survive service restarts and
+deployments. Orders and harvest reservations are still demo data until their
+routes are migrated to PostgreSQL.
 
 ## Development
 
