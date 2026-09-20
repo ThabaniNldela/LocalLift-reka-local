@@ -55,7 +55,10 @@ const buildUrl = (
   endpoint: string,
   params?: Record<string, string | number | boolean | undefined>,
 ) => {
-  const url = new URL(`${API_CONFIG.baseURL}${endpoint}`)
+  const url = new URL(
+    `${API_CONFIG.baseURL}${endpoint}`,
+    typeof window === "undefined" ? "http://localhost" : window.location.origin,
+  )
 
   if (params) {
     Object.entries(params).forEach(([key, value]) => {
