@@ -527,6 +527,7 @@ const SA_PRODUCTS = {
 const users = []
 
 const orders = []
+const vendorNotifications = []
 
 const harvestListings = [
   {
@@ -906,6 +907,10 @@ function calculateOrder(items) {
     )
 
     if (!product || !Number.isInteger(item.quantity) || item.quantity < 1) {
+      return null
+    }
+
+    if ((product.stock || 0) < item.quantity) {
       return null
     }
 
@@ -1396,6 +1401,13 @@ async function createOrder(req, res) {
 
     paymentMethod: paymentMethod || "Cash on delivery",
 
+    paymentStatus:
+      paymentMethod === "Stripe"
+        ? "paid"
+        : paymentMethod === "Vendor digital payment"
+          ? "pending_vendor_payment"
+          : "cash_on_delivery",
+
     deliveryAddress: deliveryAddress || "",
 
     notes: notes || null,
@@ -1438,6 +1450,30 @@ async function createOrder(req, res) {
   }
 
   orders.push(order)
+
+  calculatedOrder.resolvedItems.forEach(({ product, quantity }) => {
+    product.stock -= quantity
+  })
+
+  vendorNotifications.unshift({
+    id: `sms-${order.id}`,
+
+    vendorId,
+
+    orderId: order.id,
+
+    channel: "sms_demo",
+
+    status: "queued",
+
+    message: `REKA LOCAL ORDER ${order.id}\n${order.items
+      .map((item) => `${item.quantity} x ${item.productName}`)
+      .join("\n")}\nTotal: R${order.totalAmount.toFixed(
+      2,
+    )}\nReply ACCEPT ${order.id} or REJECT ${order.id}`,
+
+    createdAt: order.createdAt,
+  })
 
   const customer = getCurrentUser(req)
 
@@ -1530,6 +1566,141 @@ app.patch("/api/orders/:id/status", verifyToken, requireVendor, (req, res) => {
 
   return res.json(order)
 })
+
+function getVendorBasicPhoneState(vendorId) {
+  const products = SA_PRODUCTS[vendorId] || []
+  const pendingOrders = orders.filter(
+    (order) => order.vendorId === vendorId && order.status === "pending",
+  )
+
+  return {
+    vendorId,
+
+    products: products.map((product, index) => ({
+      number: index + 1,
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      available: (product.stock || 0) > 0,
+      stock: product.stock || 0,
+    })),
+
+    notifications: vendorNotifications.filter(
+      (notification) => notification.vendorId === vendorId,
+    ),
+
+    pendingOrders,
+
+    ussdMenu:
+      "1. My Orders\n2. My Catalogue\n3. Update Prices\n4. Availability\nUse: ACCEPT <order ID>, REJECT <order ID>, PRICE <product #> <amount>, OUT <product #>, IN <product #> <stock>",
+  }
+}
+
+app.get(
+  "/api/vendor/basic-phone",
+  verifyToken,
+  requireVendorId,
+  (req, res) => res.json(getVendorBasicPhoneState(req.vendorId)),
+)
+
+app.post(
+  "/api/vendor/basic-phone/command",
+  verifyToken,
+  requireVendorId,
+  (req, res) => {
+    const command = String(req.body.command || "")
+      .trim()
+      .replace(/\s+/g, " ")
+    const [action, reference, value] = command.split(" ")
+    const normalizedAction = action?.toUpperCase()
+    const products = SA_PRODUCTS[req.vendorId] || []
+
+    if (!normalizedAction) {
+      return res.status(400).json({ error: "Enter a USSD or SMS command." })
+    }
+
+    if (["1", "ORDERS"].includes(normalizedAction)) {
+      return res.json({
+        message: "Your pending orders are shown below.",
+        state: getVendorBasicPhoneState(req.vendorId),
+      })
+    }
+
+    if (["2", "CATALOGUE"].includes(normalizedAction)) {
+      return res.json({
+        message: "Your catalogue is shown below.",
+        state: getVendorBasicPhoneState(req.vendorId),
+      })
+    }
+
+    const productNumber = Number(reference)
+    const product = products[productNumber - 1]
+
+    if (["OUT", "IN", "PRICE"].includes(normalizedAction) && !product) {
+      return res.status(400).json({ error: "Use a valid catalogue product number." })
+    }
+
+    if (normalizedAction === "OUT") {
+      product.stock = 0
+      return res.json({
+        message: `${product.name} is now unavailable.`,
+        state: getVendorBasicPhoneState(req.vendorId),
+      })
+    }
+
+    if (normalizedAction === "IN") {
+      const stock = Number(value)
+      if (!Number.isInteger(stock) || stock < 1) {
+        return res.status(400).json({ error: "IN requires a positive whole-number stock amount." })
+      }
+      product.stock = stock
+      return res.json({
+        message: `${product.name} is available with ${stock} units.`,
+        state: getVendorBasicPhoneState(req.vendorId),
+      })
+    }
+
+    if (normalizedAction === "PRICE") {
+      const price = Number(value)
+      if (!Number.isFinite(price) || price <= 0) {
+        return res.status(400).json({ error: "PRICE requires a positive amount." })
+      }
+      product.price = price
+      return res.json({
+        message: `${product.name} now costs R${price.toFixed(2)}.`,
+        state: getVendorBasicPhoneState(req.vendorId),
+      })
+    }
+
+    if (["ACCEPT", "REJECT"].includes(normalizedAction)) {
+      const order = orders.find(
+        (candidate) =>
+          candidate.id === reference && candidate.vendorId === req.vendorId,
+      )
+      if (!order) {
+        return res.status(404).json({ error: "Order not found for this vendor." })
+      }
+      order.status = normalizedAction === "ACCEPT" ? "confirmed" : "cancelled"
+      order.updatedAt = new Date().toISOString()
+      const notification = vendorNotifications.find(
+        (candidate) => candidate.orderId === order.id,
+      )
+      if (notification) notification.status = "responded"
+      return res.json({
+        message:
+          normalizedAction === "ACCEPT"
+            ? `${order.id} accepted. The customer has been updated.`
+            : `${order.id} rejected. The customer has been updated.`,
+        state: getVendorBasicPhoneState(req.vendorId),
+      })
+    }
+
+    return res.status(400).json({
+      error:
+        "Unknown command. Try 1, 2, ACCEPT <order ID>, REJECT <order ID>, PRICE <product #> <amount>, OUT <product #>, or IN <product #> <stock>.",
+    })
+  },
+)
 
 app.post("/api/orders/:id/resend-receipt", verifyToken, async (req, res) => {
   const order = orders.find((candidate) => candidate.id === req.params.id)

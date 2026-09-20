@@ -87,6 +87,8 @@ function CheckoutForm({ onSubmit }: CheckoutFormProps) {
                 >
                   {stripePromise ? <option value="Stripe">Card via Stripe</option> : null}
                   <option value="Cash on delivery">Cash on delivery</option>
+                  <option value="Pay on collection">Pay on collection</option>
+                  <option value="Vendor digital payment">Pay vendor digitally</option>
                 </select>
               </div>
             </div>
@@ -102,6 +104,9 @@ function CheckoutForm({ onSubmit }: CheckoutFormProps) {
                 <CardElement options={{ style: { base: { color: "#0f172a", fontFamily: "Inter, sans-serif", fontSize: "16px" } } }} />
                 <p className="mt-3 text-xs text-slate-500">Your card details are securely processed by Stripe and are never stored by Reka Local.</p>
               </div>
+            ) : null}
+            {form.paymentMethod === "Vendor digital payment" ? (
+              <p className="mt-4 rounded-xl bg-amber-50 p-3 text-sm text-amber-900">The vendor will share their preferred regulated payment method after accepting this order. Reka Local does not hold your funds.</p>
             ) : null}
           </Card>
         </div>
