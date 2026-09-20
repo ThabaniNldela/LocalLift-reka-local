@@ -34,6 +34,8 @@ import LoginPage from "@/pages/customer/LoginPage"
 
 import OrderConfirmationPage from "@/pages/customer/OrderConfirmationPage"
 
+import OrderDetailsPage from "@/pages/customer/OrderDetailsPage"
+
 import OrderHistoryPage from "@/pages/customer/OrderHistoryPage"
 
 import RegisterPage from "@/pages/customer/RegisterPage"
@@ -250,7 +252,22 @@ export default function App() {
         )
 
       case "orders":
-        return <OrderHistoryPage onOpenOrder={() => {}} orders={orderHistory} />
+        return (
+          <OrderHistoryPage
+            onOpenOrder={(orderId) => guardedNavigate("order-details", { orderId })}
+            orders={orderHistory}
+          />
+        )
+
+      case "order-details": {
+        const order = orderHistory.find((candidate) => candidate.id === route.params?.orderId)
+
+        return order ? (
+          <OrderDetailsPage onBack={() => guardedNavigate("orders")} order={order} />
+        ) : (
+          <NotFoundPage onReturnHome={() => guardedNavigate("orders")} />
+        )
+      }
 
       case "profile":
         return <AccountPage />
