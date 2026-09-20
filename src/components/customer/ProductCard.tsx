@@ -11,6 +11,7 @@ type ProductCardProps = {
 
 export default function ProductCard({ product, vendor }: ProductCardProps) {
   const { addToCart } = useCart()
+  const available = product.available ?? (product.stock ?? 1) > 0
 
   return (
     <Card className="overflow-hidden p-0">
@@ -27,7 +28,12 @@ export default function ProductCard({ product, vendor }: ProductCardProps) {
             <p className="text-lg font-semibold text-slate-950">{formatCurrency(product.price)}</p>
             {vendor ? <p className="text-xs text-slate-400">Sold by {vendor.businessName}</p> : null}
           </div>
-          <Button onClick={() => addToCart(product, vendor)} variant="secondary">Add to cart</Button>
+          <div className="text-right">
+            <Button disabled={!available} onClick={() => addToCart(product, vendor)} variant="secondary">
+              {available ? "Add to cart" : "Unavailable"}
+            </Button>
+            {product.stock !== undefined ? <p className="mt-1 text-xs text-slate-400">{available ? `${product.stock} available` : "Currently unavailable"}</p> : null}
+          </div>
         </div>
       </div>
     </Card>
