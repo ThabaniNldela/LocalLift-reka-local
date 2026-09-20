@@ -10,6 +10,8 @@ const Stripe = require("stripe")
 
 const path = require("node:path")
 
+const { PrismaClient } = require("@prisma/client")
+
 const app = express()
 const frontendBuild = path.resolve(__dirname, "../../dist")
 
@@ -28,6 +30,8 @@ app.use(express.json())
 // ── JWT helper ──────────────────────────────────────────────────────────────
 
 const JWT_SECRET = process.env.JWT_SECRET || "reka-local-dev-secret"
+
+const prisma = process.env.DATABASE_URL ? new PrismaClient() : null
 
 const stripe = process.env.STRIPE_SECRET_KEY
   ? new Stripe(process.env.STRIPE_SECRET_KEY)
@@ -50,7 +54,7 @@ function signToken(payload) {
   return jwt.sign(payload, JWT_SECRET, { expiresIn: "7d" })
 }
 
-function verifyToken(req, res, next) {
+async function verifyToken(req, res, next) {
   const header = req.headers.authorization || ""
 
   const token = header.startsWith("Bearer ") ? header.slice(7) : null
@@ -60,7 +64,19 @@ function verifyToken(req, res, next) {
   try {
     req.user = jwt.verify(token, JWT_SECRET)
 
-    next()
+    if (prisma) {
+      const persistedUser = await prisma.user.findUnique({
+        where: { id: req.user.id },
+      })
+
+      if (!persistedUser) {
+        return res.status(401).json({ error: "Account no longer exists" })
+      }
+
+      req.currentUser = toSessionUser(persistedUser)
+    }
+
+    return next()
   } catch {
     return res.status(401).json({ error: "Invalid token" })
   }
@@ -604,10 +620,24 @@ app.get("/health", (_req, res) => {
     status: "ok",
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || "development",
+    accountStorage: prisma ? "postgresql" : "memory",
   })
 })
 
 // ── AUTH ────────────────────────────────────────────────────────────────────
+
+function toSessionUser(user) {
+  return {
+    ...user,
+    vendorId:
+      user.userType === "vendor" ? "vendor-mama-thandi" : null,
+  }
+}
+
+function toPublicUser(user) {
+  const { password: _password, ...safeUser } = toSessionUser(user)
+  return safeUser
+}
 
 app.post("/api/auth/register", async (req, res) => {
   try {
@@ -619,7 +649,13 @@ app.post("/api/auth/register", async (req, res) => {
         .json({ error: "email, password, and name are required" })
     }
 
-    if (users.find((u) => u.email === email)) {
+    const normalizedEmail = email.trim().toLowerCase()
+
+    if (
+      (prisma
+        ? await prisma.user.findUnique({ where: { email: normalizedEmail } })
+        : users.find((user) => user.email === normalizedEmail))
+    ) {
       return res.status(409).json({ error: "Email already registered" })
     }
 
@@ -631,19 +667,23 @@ app.post("/api/auth/register", async (req, res) => {
         .json({ error: "userType must be customer, vendor, or farmer" })
     }
 
-    const vendorId = userType === "vendor" ? "vendor-mama-thandi" : null
-
-    const user = {
-      id: `user-${Date.now()}`,
-      email,
+    const userData = {
+      email: normalizedEmail,
       password: hashed,
       name,
       userType,
       phone: phone || null,
-      vendorId,
     }
 
-    users.push(user)
+    const user = prisma
+      ? toSessionUser(await prisma.user.create({ data: userData }))
+      : {
+          id: `user-${Date.now()}`,
+          ...userData,
+          vendorId: userType === "vendor" ? "vendor-mama-thandi" : null,
+        }
+
+    if (!prisma) users.push(user)
 
     const token = signToken({
       id: user.id,
@@ -652,10 +692,12 @@ app.post("/api/auth/register", async (req, res) => {
       vendorId: user.vendorId,
     })
 
-    const { password: _pw, ...safeUser } = user
-
-    return res.status(201).json({ token, user: safeUser })
+    return res.status(201).json({ token, user: toPublicUser(user) })
   } catch (err) {
+    if (err.code === "P2002") {
+      return res.status(409).json({ error: "Email already registered" })
+    }
+
     console.error("Register error:", err)
 
     return res.status(500).json({ error: "Internal server error" })
@@ -669,7 +711,11 @@ app.post("/api/auth/login", async (req, res) => {
     if (!email || !password)
       return res.status(400).json({ error: "email and password are required" })
 
-    const user = users.find((u) => u.email === email)
+    const normalizedEmail = email.trim().toLowerCase()
+    const storedUser = prisma
+      ? await prisma.user.findUnique({ where: { email: normalizedEmail } })
+      : users.find((user) => user.email === normalizedEmail)
+    const user = storedUser ? toSessionUser(storedUser) : null
 
     if (!user) return res.status(401).json({ error: "Invalid credentials" })
 
@@ -684,9 +730,7 @@ app.post("/api/auth/login", async (req, res) => {
       vendorId: user.vendorId,
     })
 
-    const { password: _pw, ...safeUser } = user
-
-    return res.json({ token, user: safeUser })
+    return res.json({ token, user: toPublicUser(user) })
   } catch (err) {
     console.error("Login error:", err)
 
@@ -943,7 +987,7 @@ function requireStripe(res) {
 }
 
 function getCurrentUser(req) {
-  return users.find((user) => user.id === req.user.id)
+  return req.currentUser || users.find((user) => user.id === req.user.id)
 }
 
 function escapeHtml(value) {

@@ -3,8 +3,8 @@ services:
     name: reka-local
     runtime: node
     plan: free
-    buildCommand: npm ci --include=dev && npm --prefix Backend ci && npm run build
-    startCommand: npm --prefix Backend start
+    buildCommand: npm ci --include=dev && npm --prefix Backend ci && npm --prefix Backend run prisma:generate && npm run build
+    startCommand: npm --prefix Backend exec prisma db push && npm --prefix Backend start
     healthCheckPath: /health
     autoDeployTrigger: commit
     envVars:
@@ -12,6 +12,10 @@ services:
         value: production
       - key: JWT_SECRET
         generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: reka-local-db
+          property: connectionString
       - key: STRIPE_SECRET_KEY
         sync: false
       - key: SMTP_HOST
@@ -24,3 +28,9 @@ services:
         sync: false
       - key: RECEIPT_FROM
         sync: false
+
+databases:
+  - name: reka-local-db
+    plan: free
+    databaseName: reka_local
+    user: reka_local
