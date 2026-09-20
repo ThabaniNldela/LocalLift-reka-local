@@ -33,6 +33,8 @@ const vendorLinks = [
 
   { id: "vendor-orders", label: "Orders" },
 
+  { id: "vendor-basic-phone", label: "Basic phone" },
+
   { id: "vendor-analytics", label: "Analytics" },
 
   { id: "impact", label: "Impact" },

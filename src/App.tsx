@@ -48,6 +48,8 @@ import NotFoundPage from "@/pages/shared/NotFoundPage"
 
 import VendorAnalyticsPage from "@/pages/vendor/VendorAnalyticsPage"
 
+import VendorBasicPhonePage from "@/pages/vendor/VendorBasicPhonePage"
+
 import VendorDashboardPage from "@/pages/vendor/VendorDashboardPage"
 
 import VendorOrdersPage from "@/pages/vendor/VendorOrdersPage"
@@ -92,6 +94,7 @@ export default function App() {
         "vendor-dashboard",
         "vendor-products",
         "vendor-orders",
+        "vendor-basic-phone",
         "vendor-analytics",
         "vendor-profile",
         "vendor-settings",
@@ -266,6 +269,9 @@ export default function App() {
 
       case "vendor-orders":
         return <VendorOrdersPage />
+
+      case "vendor-basic-phone":
+        return <VendorBasicPhonePage />
 
       case "vendor-analytics":
         return <VendorAnalyticsPage />

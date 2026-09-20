@@ -59,6 +59,8 @@ export type VendorSummary = {
 }
 
 export type Product = {
+  available?: boolean
+
   description?: string
 
   id: string
@@ -143,6 +145,8 @@ export type Order = {
 
   paymentMethod: string
 
+  paymentStatus?: "paid" | "cash_on_delivery" | "pending_vendor_payment"
+
   receipt?: {
     sentAt?: string
 
@@ -166,6 +170,46 @@ export type Order = {
   vendorId: string
 
   vendorName?: string
+}
+
+export type BasicPhoneNotification = {
+  channel: "sms_demo"
+
+  createdAt: string
+
+  id: string
+
+  message: string
+
+  orderId: string
+
+  status: "queued" | "responded"
+}
+
+export type BasicPhoneProduct = {
+  available: boolean
+
+  id: string
+
+  name: string
+
+  number: number
+
+  price: number
+
+  stock: number
+}
+
+export type BasicPhoneState = {
+  notifications: BasicPhoneNotification[]
+
+  pendingOrders: Order[]
+
+  products: BasicPhoneProduct[]
+
+  ussdMenu: string
+
+  vendorId: string
 }
 
 export type CartItem = {

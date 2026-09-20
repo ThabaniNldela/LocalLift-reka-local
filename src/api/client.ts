@@ -3,6 +3,7 @@ import { API_CONFIG } from "@/config"
 import type {
   ApiListResponse,
   AuthResponse,
+  BasicPhoneState,
   CheckoutPayload,
   DashboardStats,
   FarmerImpact,
@@ -337,6 +338,17 @@ export const dashboardApi = {
       body: payload,
       token,
     }),
+}
+
+export const basicPhoneApi = {
+  state: (token: string) =>
+    apiRequest<BasicPhoneState>("/vendor/basic-phone", { token }),
+
+  command: (token: string, command: string) =>
+    apiRequest<{ message: string; state: BasicPhoneState }>(
+      "/vendor/basic-phone/command",
+      { method: "POST", body: { command }, token },
+    ),
 }
 
 export const farmersApi = {
